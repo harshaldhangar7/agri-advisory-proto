@@ -1,0 +1,40 @@
+# Environment files
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pdb
+venv/
+.venv/
+backend/.venv/
+
+# Node
+node_modules/
+dist/
+build/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs and runtime
+*.log
+*.sqlite3
+dev.db
+
+# Archives and packages
+*.zip
+*.tar.gz
+
+# Optional: local zip created by scripts
+agri-advisory-proto.zip
