@@ -1,3 +1,224 @@
-body { margin: 0; padding: 0; }
-input { margin: 6px; padding: 6px; }
-button { margin: 6px; padding: 6px 12px; }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary-color: #2d7a3e;
+  --secondary-color: #f39c12;
+  --error-color: #e74c3c;
+  --success-color: #27ae60;
+  --warning-color: #f39c12;
+  --text-color: #333;
+  --bg-color: #f5f5f5;
+  --border-color: #ddd;
+  --border-radius: 5px;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  line-height: 1.6;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-header {
+  background: linear-gradient(135deg, var(--primary-color) 0%, #1e5a2f 100%);
+  color: white;
+  padding: 30px 20px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.app-header h1 {
+  font-size: 2.5em;
+  margin-bottom: 10px;
+}
+
+.app-header p {
+  font-size: 1.1em;
+  opacity: 0.9;
+}
+
+.app-main {
+  flex: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 30px 20px;
+}
+
+.section {
+  margin-bottom: 30px;
+}
+
+.app-footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin-top: 30px;
+}
+
+.form-container {
+  background: white;
+  padding: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-container h3 {
+  color: var(--primary-color);
+  margin-bottom: 20px;
+  font-size: 1.3em;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: 1em;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 5px rgba(45, 122, 62, 0.3);
+}
+
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 1em;
+  cursor: pointer;
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+button:hover:not(:disabled) {
+  background-color: #1e5a2f;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+button.danger {
+  background-color: var(--error-color);
+}
+
+button.danger:hover:not(:disabled) {
+  background-color: #c0392b;
+}
+
+.alert {
+  padding: 12px 15px;
+  border-radius: var(--border-radius);
+  margin-bottom: 15px;
+  font-weight: 500;
+}
+
+.alert-error {
+  background-color: #fadbd8;
+  color: var(--error-color);
+  border-left: 4px solid var(--error-color);
+}
+
+.alert-success {
+  background-color: #d5f4e6;
+  color: var(--success-color);
+  border-left: 4px solid var(--success-color);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+thead {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+th,
+td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+th {
+  font-weight: 600;
+}
+
+tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.farmer-details {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: var(--border-radius);
+  border-left: 4px solid var(--primary-color);
+}
+
+.farmer-details h4 {
+  color: var(--primary-color);
+  margin-bottom: 10px;
+}
+
+.advice-list {
+  list-style: none;
+  padding: 0;
+}
+
+.advice-list li {
+  padding: 12px;
+  margin-bottom: 10px;
+  background-color: #f0f8ff;
+  border-left: 4px solid var(--primary-color);
+  border-radius: var(--border-radius);
+}
+
+@media (max-width: 768px) {
+  .app-header h1 {
+    font-size: 1.8em;
+  }
+
+  .app-main {
+    padding: 15px 10px;
+  }
+}

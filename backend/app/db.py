@@ -1,12 +1,21 @@
 import os
+from pathlib import Path
+from dotenv import load_dotenv
 from sqlmodel import SQLModel, create_engine
 from sqlalchemy.exc import OperationalError
 
-# Default connection string; override with DATABASE_URL env var
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    "mysql+pymysql://agriuser:your_password@localhost:3306/agri?charset=utf8mb4"
-)
+# Load .env from project root (parent of backend folder)
+env_path = Path(__file__).parent.parent.parent / ".env"
+load_dotenv(env_path)
+
+# Connection string from environment variable
+if not os.getenv("DATABASE_URL"):
+    raise ValueError(
+        "DATABASE_URL environment variable not set. "
+        "Copy .env.example to .env and update with your database credentials."
+    )
+
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 engine = create_engine(DATABASE_URL, echo=False, pool_pre_ping=True)
 
