@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Header
 from sqlmodel import select, Session
-from typing import List
+from typing import List, Optional
 import logging
 from ..models import Farmer, Plot, FarmerCreate, FarmerUpdate, PlotCreate
 from ..db import get_engine
-from ..utils import verify_api_key
+from ..auth import get_current_user_id
 
 # Setup logging
 logger = logging.getLogger(__name__)
@@ -21,9 +21,9 @@ def list_farmers(
     skip: int = 0,
     limit: int = 100,
     session: Session = Depends(get_session),
-    api_key: str = Depends(verify_api_key)
+    user_id: int = Depends(get_current_user_id)
 ):
-    """Get all farmers with pagination"""
+    """Get all farmers with pagination (requires authentication)"""
     try:
         stmt = select(Farmer).offset(skip).limit(limit)
         farmers = session.exec(stmt).all()
@@ -37,9 +37,9 @@ def list_farmers(
 def create_farmer(
     farmer_data: FarmerCreate,
     session: Session = Depends(get_session),
-    api_key: str = Depends(verify_api_key)
+    user_id: int = Depends(get_current_user_id)
 ):
-    """Create a new farmer with validated input"""
+    """Create a new farmer with validated input (requires authentication)"""
     try:
         # Create Farmer instance from validated FarmerCreate
         farmer = Farmer(**farmer_data.dict())
@@ -56,9 +56,9 @@ def create_farmer(
 def get_farmer(
     farmer_id: str, 
     session: Session = Depends(get_session),
-    api_key: str = Depends(verify_api_key)
+    user_id: int = Depends(get_current_user_id)
 ):
-    """Get farmer details with plots"""
+    """Get farmer details with plots (requires authentication)"""
     try:
         farmer = session.get(Farmer, farmer_id)
         if not farmer:
@@ -79,9 +79,9 @@ def update_farmer(
     farmer_id: str,
     updates: FarmerUpdate,
     session: Session = Depends(get_session),
-    api_key: str = Depends(verify_api_key)
+    user_id: int = Depends(get_current_user_id)
 ):
-    """Update farmer information with validated input"""
+    """Update farmer information with validated input (requires authentication)"""
     try:
         farmer = session.get(Farmer, farmer_id)
         if not farmer:
@@ -109,9 +109,9 @@ def update_farmer(
 def delete_farmer(
     farmer_id: str,
     session: Session = Depends(get_session),
-    api_key: str = Depends(verify_api_key)
+    user_id: int = Depends(get_current_user_id)
 ):
-    """Delete a farmer"""
+    """Delete a farmer (requires authentication)"""
     try:
         farmer = session.get(Farmer, farmer_id)
         if not farmer:
@@ -133,9 +133,9 @@ def add_plot(
     farmer_id: str, 
     plot_data: PlotCreate,
     session: Session = Depends(get_session),
-    api_key: str = Depends(verify_api_key)
+    user_id: int = Depends(get_current_user_id)
 ):
-    """Add a plot to farmer with validated input"""
+    """Add a plot to farmer with validated input (requires authentication)"""
     try:
         farmer = session.get(Farmer, farmer_id)
         if not farmer:
@@ -159,9 +159,9 @@ def add_plot(
 def get_farmer_plots(
     farmer_id: str,
     session: Session = Depends(get_session),
-    api_key: str = Depends(verify_api_key)
+    user_id: int = Depends(get_current_user_id)
 ):
-    """Get all plots for a farmer"""
+    """Get all plots for a farmer (requires authentication)"""
     try:
         farmer = session.get(Farmer, farmer_id)
         if not farmer:
@@ -183,9 +183,9 @@ def delete_plot(
     farmer_id: str,
     plot_id: str,
     session: Session = Depends(get_session),
-    api_key: str = Depends(verify_api_key)
+    user_id: int = Depends(get_current_user_id)
 ):
-    """Delete a plot"""
+    """Delete a plot (requires authentication)"""
     try:
         plot = session.get(Plot, plot_id)
         if not plot or plot.farmer_id != farmer_id:

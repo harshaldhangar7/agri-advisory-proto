@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 
-const API_KEY = "default-dev-key";
 const API_URL = "/api";
 
 export default function PlotForm({ farmerId, onPlotAdded }) {
+  const { accessToken } = useAuth();
   const [plotName, setPlotName] = useState("");
   const [crop, setCrop] = useState("");
   const [area, setArea] = useState("");
@@ -45,7 +46,7 @@ export default function PlotForm({ farmerId, onPlotAdded }) {
         },
         {
           headers: {
-            "x-api-key": API_KEY
+            Authorization: `Bearer ${accessToken}`
           }
         }
       );

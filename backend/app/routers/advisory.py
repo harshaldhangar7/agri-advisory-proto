@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Header
 from sqlmodel import Session
 from pydantic import BaseModel, field_validator
 from typing import Optional
@@ -6,7 +6,7 @@ from datetime import datetime
 import logging
 from ..models import Plot
 from ..db import get_engine
-from ..utils import verify_api_key
+from ..auth import get_current_user_id
 
 # Setup logging
 logger = logging.getLogger(__name__)
@@ -46,9 +46,9 @@ class AdvisoryRequest(BaseModel):
 def recommend(
     req: AdvisoryRequest, 
     session: Session = Depends(get_session),
-    api_key: str = Depends(verify_api_key)
+    user_id: int = Depends(get_current_user_id)
 ):
-    """Get agricultural advisory for a plot"""
+    """Get agricultural advisory for a plot (requires authentication)"""
     try:
         # Validate that plot exists
         plot = session.get(Plot, req.plot_id)

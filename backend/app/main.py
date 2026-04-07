@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 import logging
 from .db import init_db
-from .routers import farmers, advisory
+from .routers import farmers, advisory, auth
 
 # Configure logging
 logging.basicConfig(
@@ -24,6 +24,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Include routers
+app.include_router(auth.router)
 app.include_router(farmers.router)
 app.include_router(advisory.router)
 

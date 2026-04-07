@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 
-const API_KEY = "default-dev-key";
 const API_URL = "/api";
 
 export default function FarmerForm() {
+  const { accessToken } = useAuth();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [farmerId, setFarmerId] = useState(null);
@@ -27,7 +28,7 @@ export default function FarmerForm() {
         language: "mr"
       }, {
         headers: {
-          "x-api-key": API_KEY
+          Authorization: `Bearer ${accessToken}`
         }
       });
       setFarmerId(res.data.id);

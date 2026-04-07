@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 
-const API_KEY = "default-dev-key";
 const API_URL = "/api";
 
 export default function AdvisoryPanel() {
+  const { accessToken } = useAuth();
   const [plotId, setPlotId] = useState("");
   const [symptoms, setSymptoms] = useState("");
   const [advice, setAdvice] = useState(null);
@@ -28,7 +29,7 @@ export default function AdvisoryPanel() {
         weather: { rain_last_3_days: 0 }
       }, {
         headers: {
-          "x-api-key": API_KEY
+          Authorization: `Bearer ${accessToken}`
         }
       });
       setAdvice(res.data.advice);

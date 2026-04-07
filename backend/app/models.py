@@ -2,6 +2,7 @@ from typing import Optional, List
 from sqlmodel import SQLModel, Field, Relationship
 from pydantic import field_validator, BaseModel
 from uuid import uuid4
+from datetime import datetime, timezone
 
 def gen_uuid():
     return str(uuid4())
@@ -126,3 +127,104 @@ class Plot(SQLModel, table=True):
     crop: str
     farmer_id: Optional[str] = Field(default=None, foreign_key="farmer.id")
     farmer: Optional[Farmer] = Relationship(back_populates="plots")
+
+# ============================================================================
+# USER AUTHENTICATION MODELS
+# ============================================================================
+
+class UserValidation(BaseModel):
+    """Validation model for user data"""
+    username: str
+    email: str
+    password: str
+    
+    @field_validator('username', mode='before')
+    @classmethod
+    def validate_username(cls, v):
+        if isinstance(v, str):
+            v = v.strip()
+        if not v:
+            raise ValueError('Username cannot be empty')
+        if len(v) < 3:
+            raise ValueError('Username must be at least 3 characters')
+        if len(v) > 50:
+            raise ValueError('Username must be less than 50 characters')
+        return v
+    
+    @field_validator('email', mode='before')
+    @classmethod
+    def validate_email(cls, v):
+        if isinstance(v, str):
+            v = v.strip().lower()
+        if not v or '@' not in v:
+            raise ValueError('Valid email is required')
+        return v
+    
+    @field_validator('password', mode='before')
+    @classmethod
+    def validate_password(cls, v):
+        if isinstance(v, str):
+            v = v.strip()
+        if not v:
+            raise ValueError('Password cannot be empty')
+        if len(v) < 6:
+            raise ValueError('Password must be at least 6 characters')
+        if len(v) > 72:
+            raise ValueError('Password must be less than 72 characters (bcrypt limitation)')
+        return v
+
+class UserCreate(UserValidation):
+    """Request model for user registration"""
+    pass
+
+class UserLogin(BaseModel):
+    """Request model for user login"""
+    username: str
+    password: str
+
+class User(SQLModel, table=True):
+    """Database model for users"""
+    id: int = Field(primary_key=True, index=True)
+    username: str = Field(index=True, unique=True)
+    email: str = Field(index=True, unique=True)
+    password_hash: str
+    reset_code: Optional[str] = Field(default=None, index=True)  # For password reset
+    reset_code_expiry: Optional[str] = Field(default=None)  # ISO format timestamp
+    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+
+class UserResponse(BaseModel):
+    """Response model for user data (no password)"""
+    id: int
+    username: str
+    email: str
+    created_at: str
+
+class Token(BaseModel):
+    """Response model for authentication tokens"""
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
+    user: UserResponse
+
+class ForgotPasswordRequest(BaseModel):
+    """Request model for password reset request"""
+    email: str
+
+class ResetPasswordRequest(BaseModel):
+    """Request model for password reset"""
+    email: str
+    reset_code: str
+    new_password: str
+    
+    @field_validator('new_password', mode='before')
+    @classmethod
+    def validate_password(cls, v):
+        if isinstance(v, str):
+            v = v.strip()
+        if not v:
+            raise ValueError('Password cannot be empty')
+        if len(v) < 6:
+            raise ValueError('Password must be at least 6 characters')
+        if len(v) > 72:
+            raise ValueError('Password must be less than 72 characters')
+        return v

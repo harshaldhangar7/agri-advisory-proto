@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 import PlotForm from "./PlotForm";
 
-const API_KEY = "default-dev-key";
 const API_URL = "/api";
 
 export default function FarmerList() {
+  const { accessToken } = useAuth();
   const [farmers, setFarmers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -17,7 +18,7 @@ export default function FarmerList() {
     setLoading(true);
     try {
       const res = await axios.get(`${API_URL}/farmers/`, {
-        headers: { "x-api-key": API_KEY }
+        headers: { Authorization: `Bearer ${accessToken}` }
       });
       setFarmers(res.data);
     } catch (e) {
@@ -31,7 +32,7 @@ export default function FarmerList() {
     setError("");
     try {
       const res = await axios.get(`${API_URL}/farmers/${farmerId}`, {
-        headers: { "x-api-key": API_KEY }
+        headers: { Authorization: `Bearer ${accessToken}` }
       });
       setSelectedFarmerData(res.data);
     } catch (e) {
@@ -45,7 +46,7 @@ export default function FarmerList() {
     setError("");
     try {
       await axios.delete(`${API_URL}/farmers/${farmerId}`, {
-        headers: { "x-api-key": API_KEY }
+        headers: { Authorization: `Bearer ${accessToken}` }
       });
       setFarmers(farmers.filter(f => f.id !== farmerId));
       setSelectedFarmerId(null);
@@ -63,7 +64,7 @@ export default function FarmerList() {
     setError("");
     try {
       await axios.delete(`${API_URL}/farmers/${farmerId}/plots/${plotId}`, {
-        headers: { "x-api-key": API_KEY }
+        headers: { Authorization: `Bearer ${accessToken}` }
       });
       // Refresh farmer details
       fetchFarmerDetail(farmerId);
